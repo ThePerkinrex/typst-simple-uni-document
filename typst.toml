@@ -1,0 +1,4 @@
+[package]
+name = "simple-document"
+version = "0.1.0"
+entrypoint = "lib.typ"

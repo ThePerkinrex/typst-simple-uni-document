@@ -5,11 +5,10 @@
 
   codly(languages: codly-languages, )
 
-	let header = [
-				#emph(subject)
-				#h(1fr)
-				#emph(title)
-			]
+	let header = grid(columns: 2, column-gutter: 1fr, align: (left+top, right+top),
+				emph(subject),
+				emph(title)
+	)
 	
 	
 	set heading(numbering: "1.")

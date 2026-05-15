@@ -3,7 +3,7 @@
   import "@preview/codly-languages:0.1.1": *
 	show: codly-init.with()
 
-  codly(languages: codly-languages, )
+  codly(languages: codly-languages, number-format: x => text(fill: black.lighten(40%), numbering.with("1")(x)))
 
 	let header = grid(columns: 2, column-gutter: 1fr, align: (left+top, right+top),
 				emph(subject),

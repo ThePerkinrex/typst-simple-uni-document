@@ -1,6 +1,6 @@
 #let conf(title: none, subject: none, year: none, authors: (), doc) = {
 	import "@preview/codly:1.3.0": *
-  import "@preview/codly-languages:0.1.1": *
+  import "@preview/codly-languages:0.1.10": *
 	show: codly-init.with()
 
   codly(languages: codly-languages, number-format: x => text(fill: black.lighten(40%), numbering.with("1")(x)))

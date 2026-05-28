@@ -1,7 +1,10 @@
+#import "@preview/codly:1.3.0": *
+
 #let conf(title: none, subject: none, year: none, authors: (), doc) = {
-	import "@preview/codly:1.3.0": *
+	
   import "@preview/codly-languages:0.1.10": *
 	show: codly-init.with()
+	set table(stroke: 0.8pt + gray)
 
   codly(languages: codly-languages, number-format: x => text(fill: black.lighten(40%), numbering.with("1")(x)))
 

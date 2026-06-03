@@ -1,44 +1,63 @@
 #import "@preview/codly:1.3.0": *
 
-#let conf(title: none, subject: none, year: none, authors: (), doc) = {
-	
+#let table-header(..headers) = table.header(
+  ..headers
+    .pos()
+    .map(cell => {
+      if cell.func() == table.cell {
+        let fields = cell.fields()
+        table.cell(
+          strong(fields.remove("body")),
+          fill: blue.lighten(80%),
+          stroke: 1pt + blue.darken(50%).transparentize(40%),
+          ..fields,
+        )
+      } else {
+        table.cell(strong(cell), fill: blue.lighten(80%), stroke: 1pt + blue.darken(50%).transparentize(40%))
+      }
+    }),
+)
+
+#let conf(title: none, subject: none, year: none, authors: (), outline-args: (:), doc) = {
   import "@preview/codly-languages:0.1.10": *
-	show: codly-init.with()
-	set table(stroke: 0.8pt + gray)
+  show: codly-init.with()
+  set table(stroke: 0.8pt + gray, fill: (x, y) => if calc.even(y) { gray.transparentize(70%) })
 
   codly(languages: codly-languages, number-format: x => text(fill: black.lighten(40%), numbering.with("1")(x)))
 
-	let header = grid(columns: 2, column-gutter: 1fr, align: (left+top, right+top),
-				emph(subject),
-				emph(title)
-	)
-	
-	
-	set heading(numbering: "1.")
-	set page("a4", numbering: "i", header: context {
-		if counter(page).get().first() > 1 {
-			header
-		}
-	} )
-
-	set par(justify: true)
+  let header = grid(
+    columns: 2,
+    column-gutter: 1fr,
+    align: (left + top, right + top),
+    emph(subject), emph(title),
+  )
 
 
-	let optional_line(dict, key, map: x => x) = {
-		let x = dict.at(key, default: none)
-		if (x != none) {
-			linebreak()
-			map(x)
-		}
-	}
+  set heading(numbering: "1.")
+  set page("a4", numbering: "i", header: context {
+    if counter(page).get().first() > 1 {
+      header
+    }
+  })
 
-	set align(center)
+  set par(justify: true)
+
+
+  let optional_line(dict, key, map: x => x) = {
+    let x = dict.at(key, default: none)
+    if (x != none) {
+      linebreak()
+      map(x)
+    }
+  }
+
+  set align(center)
   text(17pt, title)
-	v(25pt)
+  v(25pt)
   text(14pt, style: "italic", subject)
-	linebreak()
+  linebreak()
   text(12pt, year)
-	v(10pt)
+  v(10pt)
 
 
   let count = authors.len()
@@ -47,47 +66,61 @@
     columns: (1fr,) * ncols,
     row-gutter: 24pt,
     ..authors.map(author => {
-			author.name
-			optional_line(author, "number")
-			optional_line(author, "email", map: email => link("mailto:" + email))
-			
-		}),
+      author.name
+      optional_line(author, "number")
+      optional_line(author, "email", map: email => link("mailto:" + email))
+    }),
   )
 
-	set align(left)
+  set align(left)
 
-	v(100pt)
+  v(100pt)
 
-	outline()
+  outline(..outline-args)
 
-	pagebreak()
-	counter(page).update(1) // Now use arabic numbers
+  pagebreak()
+  counter(page).update(1) // Now use arabic numbers
 
-	set page(numbering: "1", header: header)
+  set page(numbering: "1", header: header)
 
-	doc
+  doc
 }
 
 #let question_count = counter("question")
 #let question(q, display: "1.") = {
-	v(2em)
-	question_count.step()
-	context heading(grid(columns: (auto, 1em, 1fr), question_count.display(display),[], q), numbering: none, depth: 4, outlined: false)
+  v(2em)
+  question_count.step()
+  context heading(
+    grid(
+      columns: (auto, 1em, 1fr),
+      question_count.display(display), [], q,
+    ),
+    numbering: none,
+    depth: 4,
+    outlined: false,
+  )
 }
 #let question_multiple(q, step_all: false, display: "1. a)") = {
-	context if step_all or question_count.get().len() <= 1 {
-		v(2em)
-		question_count.step(level: 1)
-	}
-	question_count.step(level: 2)
-	context heading(grid(columns: (auto, 1em, 1fr), question_count.display(display),[], q), numbering: none, depth: 4, outlined: false)
+  context if step_all or question_count.get().len() <= 1 {
+    v(2em)
+    question_count.step(level: 1)
+  }
+  question_count.step(level: 2)
+  context heading(
+    grid(
+      columns: (auto, 1em, 1fr),
+      question_count.display(display), [], q,
+    ),
+    numbering: none,
+    depth: 4,
+    outlined: false,
+  )
 }
 
 // #let annex_numbering(..args) = "Anexo " + numbering("A.", ..args)
 
 #let appendix(body) = {
-
-	counter(heading).update(0)
+  counter(heading).update(0)
   set heading(numbering: "A.", supplement: [Anexo])
   body
 }

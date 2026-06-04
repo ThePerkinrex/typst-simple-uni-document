@@ -18,12 +18,12 @@
     }),
 )
 
-#let conf(title: none, subject: none, year: none, authors: (), outline-args: (:), doc) = {
+#let conf(title: none, subject: none, year: none, authors: (), outline-args: (:), extra-lang: (:), doc) = {
   import "@preview/codly-languages:0.1.10": *
   show: codly-init.with()
   set table(stroke: 0.8pt + gray, fill: (x, y) => if calc.even(y) { gray.transparentize(70%) })
 
-  codly(languages: codly-languages, number-format: x => text(fill: black.lighten(40%), numbering.with("1")(x)))
+  codly(languages: (: ..codly-languages, ..extra-lang), number-format: x => text(fill: black.lighten(40%), numbering.with("1")(x)))
 
   let header = grid(
     columns: 2,

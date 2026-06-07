@@ -23,8 +23,8 @@
   en: x => [Definition \##x],
 )
 
-#let definition(word, desc) = {
-  block(inset: 1em, width: 100%, radius: 10pt, fill: blue.darken(20%), [#text(white, grid(
+#let definition(word, desc, breakable: false) = {
+  block(inset: 1em, width: 100%, radius: 10pt, fill: blue.darken(20%), breakable: breakable, [#text(white, grid(
     columns: (auto, auto),
     gutter: 0.5cm,
     align: horizon,
@@ -59,6 +59,14 @@
     v(1em)
     e
   }
+}
+
+#let enunciado(fill: gray.transparentize(65%), content) = {
+  pad(x: 2em, top: 0.5em, block(fill: fill, width: 100%, radius: 2pt, pad(1.0em, text(style: "italic", content))))
+}
+
+#let todo(content) = {
+  enunciado(fill: red.lighten(80%), text(red.darken(20%))[*TODO:* #content])
 }
 
 #let conf(title: none, subject: none, year: none, authors: (), outline-args: (:), extra-lang: (:), doc) = {

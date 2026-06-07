@@ -18,12 +18,58 @@
     }),
 )
 
+#let def_text = (
+  es: x => [Definición \##x],
+  en: x => [Definition \##x],
+)
+
+#let definition(word, desc) = {
+  block(inset: 1em, width: 100%, radius: 10pt, fill: blue.darken(20%), [#text(white, grid(
+    columns: (auto, auto),
+    gutter: 0.5cm,
+    align: horizon,
+    text(weight: "black", size: 1.3em, word),
+
+    text(font: "DejaVu Sans Mono", style: "italic", context {
+      let num = def_text.at(text.lang)(counter(<definition>).display())
+      num
+      [#metadata((word: word, desc: desc, num: num))<def-meta>]
+    }),
+    grid.cell(colspan: 2, text(desc)),
+  ))<definition>])
+  
+}
+
+#let definitions() = context{
+  for e in query(<def-meta>).map(x => x.value).map(x => {grid(
+    columns: (auto, auto),
+    gutter: 0.5cm,
+    align: horizon,
+    text(weight: "black", size: 1.3em, x.word),
+
+    text(font: "DejaVu Sans Mono", style: "italic", x.num),
+  )
+  
+  grid(
+    columns: (1cm, auto),
+    align: horizon,
+    [],
+    text(x.desc),
+  )}) {
+    v(1em)
+    e
+  }
+}
+
 #let conf(title: none, subject: none, year: none, authors: (), outline-args: (:), extra-lang: (:), doc) = {
   import "@preview/codly-languages:0.1.10": *
   show: codly-init.with()
   set table(stroke: 0.8pt + gray, fill: (x, y) => if calc.even(y) { gray.transparentize(70%) })
 
-  codly(languages: (: ..codly-languages, ..extra-lang), number-format: x => text(fill: black.lighten(40%), numbering.with("1")(x)))
+  codly(languages: (:..codly-languages, ..extra-lang), number-format: x => text(
+    fill: black.lighten(40%),
+    numbering.with("1")(x),
+  ))
 
   let header = grid(
     columns: 2,
